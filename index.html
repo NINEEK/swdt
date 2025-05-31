@@ -1,0 +1,2211 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星空思维导图 - 量子架构版 v2.1</title>
+    <style>
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background: #0f142b url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1772&q=80') center/cover no-repeat;
+    color: #e0e0e0;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    user-select: none;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+    z-index: 0;
+}
+
+#app { 
+    display: flex; 
+    width: 100%; 
+    height: 100%; 
+    position: relative; 
+    z-index: 1;
+}
+
+/* 量子控制界面 */
+#celestial-menu-toggle {
+    position: absolute; 
+    top: 28px; 
+    right: 28px;
+    width: 36px; 
+    height: 36px; 
+    background: linear-gradient(135deg, #ffffff 0%, #e6f0ff 100%);
+    border-radius: 50%; 
+    cursor: pointer;
+    box-shadow: 
+        0 0 25px 10px rgba(120,180,255,0.8),
+        inset 0 0 10px rgba(255,255,255,0.5);
+    animation: quantum-pulse 2.5s infinite alternate;
+    z-index: 1001;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#celestial-menu-toggle::after {
+    content: '☰';
+    font-size: 18px;
+    color: #1a2744;
+    font-weight: bold;
+}
+
+#celestial-menu-toggle:hover {
+    transform: scale(1.15) rotate(90deg);
+    box-shadow: 
+        0 0 35px 15px rgba(120,180,255,1),
+        inset 0 0 15px rgba(255,255,255,0.7);
+}
+
+@keyframes quantum-pulse {
+    0%   { box-shadow: 0 0 20px 8px #78b4ffcc, inset 0 0 8px rgba(255,255,255,0.4); }
+    100% { box-shadow: 0 0 35px 15px #a8d0ff, inset 0 0 12px rgba(255,255,255,0.6); }
+}
+
+/* 量子菜单面板 */
+#celestial-menu-options {
+    display: none; 
+    position: absolute; 
+    top: 76px; 
+    right: 24px;
+    background: rgba(18, 24, 48, 0.98);
+    border: 1px solid #4a90e255;
+    border-radius: 16px; 
+    padding: 24px 20px 20px 20px;
+    min-width: 280px; 
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 
+        0px 20px 50px rgba(0,0,0,0.7),
+        0px 0px 100px rgba(78,150,255,0.15);
+    z-index: 1000;
+    backdrop-filter: blur(20px);
+    animation: menu-slide-in 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes menu-slide-in {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.menu-header {
+    font-size: 1.15em; 
+    color: #8fc8ff; 
+    margin-bottom: 14px;
+    font-weight: 700; 
+    letter-spacing: 1.5px; 
+    text-align: left;
+    border-bottom: 2px solid #4a90e244; 
+    padding-bottom: 10px;
+    margin-top: 16px;
+    text-transform: uppercase;
+}
+
+.menu-header:first-child {
+    margin-top: 0;
+}
+
+.menu-item {
+    color: #e6f2ff; 
+    background: rgba(255,255,255,0.04);
+    margin: 10px 0; 
+    padding: 14px 22px;
+    cursor: pointer; 
+    border-radius: 8px;
+    font-size: 1.02em; 
+    font-weight: 500;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.menu-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(78,150,255,0.3), transparent);
+    transition: left 0.5s;
+}
+
+.menu-item:hover::before {
+    left: 100%;
+}
+
+.menu-item:hover {
+    background: rgba(78,150,255,0.3); 
+    color: #fff;
+    border-color: #4e96ff66;
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(78,150,255,0.3);
+}
+
+.menu-item:active {
+    transform: translateX(3px) scale(0.98);
+}
+
+.menu-item.layout-option.active,
+.menu-item.toggle-active {
+    background: rgba(78,150,255,0.45);
+    border-color: #4e96ff88;
+    color: #fff;
+    box-shadow: 
+        0 4px 20px rgba(78,150,255,0.4),
+        inset 0 0 10px rgba(255,255,255,0.1);
+}
+
+/* 工作区管理面板 */
+#workspace-panel {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(18, 24, 48, 0.98);
+    border: 2px solid #4a90e288;
+    border-radius: 20px;
+    padding: 32px;
+    min-width: 420px;
+    max-width: 90vw;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 
+        0px 30px 80px rgba(0,0,0,0.8),
+        0px 0px 150px rgba(78,150,255,0.2);
+    z-index: 2000;
+    backdrop-filter: blur(30px);
+    animation: modal-appear 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes modal-appear {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -45%) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.workspace-header {
+    font-size: 1.5em;
+    color: #a8d0ff;
+    margin-bottom: 24px;
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.workspace-list {
+    margin: 20px 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.workspace-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    margin: 8px 0;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid #4a90e233;
+    border-radius: 10px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.workspace-item:hover {
+    background: rgba(78,150,255,0.15);
+    border-color: #4a90e266;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(78,150,255,0.25);
+}
+
+.workspace-item.active {
+    background: rgba(78,150,255,0.3);
+    border-color: #4e96ff88;
+    box-shadow: 
+        0 6px 25px rgba(78,150,255,0.35),
+        inset 0 0 10px rgba(255,255,255,0.1);
+}
+
+.workspace-name {
+    font-size: 1.1em;
+    color: #e6f2ff;
+    font-weight: 500;
+    flex-grow: 1;
+}
+
+.workspace-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.workspace-btn {
+    padding: 6px 12px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid #4a90e244;
+    border-radius: 6px;
+    color: #a8d0ff;
+    font-size: 0.85em;
+    cursor: pointer;
+    transition: all 0.25s;
+}
+
+.workspace-btn:hover {
+    background: rgba(78,150,255,0.3);
+    border-color: #4e96ff66;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.workspace-new-input {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(255,255,255,0.08);
+    border: 2px solid #4a90e266;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1.05em;
+    margin: 16px 0;
+    outline: none;
+    transition: all 0.3s;
+}
+
+.workspace-new-input:focus {
+    background: rgba(255,255,255,0.12);
+    border-color: #4e96ff88;
+    box-shadow: 0 0 20px rgba(78,150,255,0.4);
+}
+
+.workspace-panel-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.panel-btn {
+    padding: 12px 28px;
+    background: linear-gradient(135deg, #4e96ff 0%, #3d7ae6 100%);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1.05em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(78,150,255,0.4);
+}
+
+.panel-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(78,150,255,0.6);
+}
+
+.panel-btn.secondary {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid #4a90e266;
+}
+
+/* 快速工具栏 */
+#quick-toolbar {
+    position: absolute;
+    top: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    background: rgba(18, 24, 48, 0.9);
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid #4a90e244;
+    backdrop-filter: blur(20px);
+    z-index: 900;
+}
+
+.toolbar-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid #4a90e233;
+    color: #a8d0ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.25s;
+    font-size: 18px;
+}
+
+.toolbar-btn:hover {
+    background: rgba(78,150,255,0.3);
+    border-color: #4e96ff66;
+    color: #fff;
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(78,150,255,0.5);
+}
+
+.toolbar-btn.active {
+    background: rgba(78,150,255,0.45);
+    border-color: #4e96ff88;
+    color: #fff;
+}
+
+/* 子面板样式优化 */
+.sub-panel {
+    display: none;
+    position: absolute;
+    top: 76px;
+    right: 320px;
+    background: rgba(18, 24, 48, 0.98);
+    border: 1px solid #4a90e255;
+    border-radius: 16px;
+    padding: 20px;
+    min-width: 240px;
+    box-shadow: 
+        0px 20px 50px rgba(0,0,0,0.7),
+        0px 0px 80px rgba(78,150,255,0.1);
+    z-index: 999;
+    backdrop-filter: blur(20px);
+    animation: menu-slide-in 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sub-panel-header {
+    font-size: 1.15em;
+    color: #8fc8ff;
+    margin-bottom: 16px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.bg-preset-item {
+    color: #e6f2ff;
+    background: rgba(255,255,255,0.05);
+    margin: 10px 0;
+    padding: 12px 18px;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 0.98em;
+    transition: all 0.3s;
+    border: 1px solid transparent;
+}
+
+.bg-preset-item:hover {
+    background: rgba(78,150,255,0.25);
+    border-color: #4e96ff44;
+    transform: translateX(3px);
+}
+
+.bg-preset-item.active {
+    background: rgba(78,150,255,0.4);
+    border-color: #4e96ff66;
+    box-shadow: inset 0 0 10px rgba(255,255,255,0.1);
+}
+
+#color-picker-panel {
+    text-align: center;
+}
+
+#bgColorPicker {
+    width: 100%;
+    height: 50px;
+    margin: 16px 0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+#applyColorBg {
+    background: linear-gradient(135deg, #4e96ff 0%, #3d7ae6 100%);
+    color: white;
+    border: none;
+    padding: 10px 28px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.05em;
+    font-weight: 600;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(78,150,255,0.4);
+}
+
+#applyColorBg:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(78,150,255,0.6);
+}
+
+/* 导图容器与画布 */
+#mind-map-container { 
+    flex-grow: 1; 
+    position: relative; 
+    overflow: hidden; 
+    cursor: grab; 
+}
+
+#mind-map-container.grabbing { 
+    cursor: grabbing; 
+}
+
+#mind-map-canvas { 
+    position: absolute; 
+    width: 100%; 
+    height: 100%; 
+    background: transparent; 
+    transform-origin: 0 0; 
+}
+
+/* 量子节点样式系统 */
+.node {
+    position: absolute; 
+    border-radius: 50%;
+    cursor: pointer; 
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10; 
+    width: 26px; 
+    height: 26px;
+    background: radial-gradient(circle at 30% 30%, #ffffff 0%, #b8d4ff 25%, #7aaaff 50%, transparent 90%);
+    box-shadow: 
+        0 0 15px 5px #a8ccffdd, 
+        0 0 25px 10px #7aaaff77,
+        inset 0 0 10px rgba(255,255,255,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0;
+}
+
+.node.root-node {
+    width: 40px; 
+    height: 40px;
+    background: radial-gradient(circle at 30% 30%, #ffffff 0%, #cce4ff 20%, #8fc3ff 45%, transparent 85%);
+    box-shadow:
+        0 0 25px 10px #fff, 
+        0 0 40px 18px #b8e0ffaa,
+        0 0 60px 30px #7ac8ff55,
+        inset 0 0 15px rgba(255,255,255,0.7);
+    animation: root-quantum-glow 3s infinite alternate;
+}
+
+@keyframes root-quantum-glow {
+    0%   { 
+        box-shadow: 
+            0 0 25px 10px #fff, 
+            0 0 40px 18px #b8e0ffaa,
+            0 0 60px 30px #7ac8ff55,
+            inset 0 0 15px rgba(255,255,255,0.7);
+        transform: scale(1);
+    }
+    100% { 
+        box-shadow: 
+            0 0 35px 15px #fff, 
+            0 0 55px 28px #a8d8ffdd,
+            0 0 80px 40px #6fc4ff77,
+            inset 0 0 20px rgba(255,255,255,0.9);
+        transform: scale(1.05);
+    }
+}
+
+.node:hover {
+    transform: scale(1.25); 
+    filter: brightness(140%);
+    box-shadow: 
+        0 0 20px 8px #cce9ff, 
+        0 0 40px 18px #8fd4ffaa,
+        inset 0 0 12px rgba(255,255,255,0.8);
+    z-index: 15;
+}
+
+.node.selected {
+    box-shadow: 
+        0 0 25px 12px #6fc4ffff, 
+        0 0 45px 20px #4eb6ffaa,
+        inset 0 0 15px rgba(255,255,255,0.9);
+    transform: scale(1.15);
+}
+
+/* 节点文本显示系统 */
+.node-text {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 10px;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    text-shadow: 
+        0 0 10px #000000cc,
+        0 0 20px #4a90e288;
+    pointer-events: none;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.root-node .node-text {
+    font-size: 17px;
+    font-weight: 600;
+    margin-top: 14px;
+    max-width: 220px;
+}
+
+/* 文本隐藏状态 */
+body.text-hidden .node-text {
+    opacity: 0;
+    pointer-events: none;
+}
+
+body.text-hidden .node-text.editing-temp-show {
+    opacity: 1;
+}
+
+/* 编辑输入框 */
+.node-input {
+    position: absolute;
+    background: rgba(255,255,255,0.96);
+    color: #1a2744; 
+    border: 2px solid #7ec8ff;
+    padding: 12px 16px; 
+    border-radius: 10px;
+    z-index: 101; 
+    min-width: 180px; 
+    max-width: 380px;
+    font-size: 1.05em; 
+    font-family: inherit;
+    box-shadow: 
+        0 0 30px 12px #a8d0ff, 
+        0 6px 25px rgba(0,0,0,0.35);
+    outline: none; 
+    resize: none; 
+    line-height: 1.5; 
+    box-sizing: border-box;
+    animation: input-glow-pulse 2s infinite alternate;
+}
+
+@keyframes input-glow-pulse {
+    0%   { 
+        box-shadow: 
+            0 0 25px 10px #b8e0ff, 
+            0 6px 20px rgba(0,0,0,0.3);
+    }
+    100% { 
+        box-shadow: 
+            0 0 40px 18px #8fd4ff, 
+            0 8px 30px rgba(0,0,0,0.4);
+    }
+}
+
+.node-input:focus {
+    background: #ffffff;
+    color: #0f1a33;
+    border-color: #4eb6ff;
+    box-shadow: 
+        0 0 45px 20px #6fc4ffdd, 
+        0 8px 35px rgba(0,0,0,0.45);
+}
+
+/* SVG连线系统 */
+#lines-svg { 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    pointer-events: none; 
+    z-index: 1; 
+}
+
+.connection-line {
+    stroke: #a8d0ff;
+    stroke-width: 3.5px; 
+    fill: none;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 6px #7ec8ff88);
+    opacity: 0.85;
+    transition: stroke 0.3s, opacity 0.3s;
+}
+
+.connection-path {
+    stroke: #a8d0ff;
+    stroke-width: 3.5px;
+    fill: none;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 6px #7ec8ff88);
+    opacity: 0.85;
+    transition: stroke 0.3s, opacity 0.3s;
+}
+
+/* 右键菜单 */
+#node-context-menu {
+    display: none; 
+    position: absolute;
+    background: rgba(20,30,55,0.98);
+    border: 1px solid #4a90e2;
+    border-radius: 12px; 
+    padding: 14px 0;
+    z-index: 200; 
+    box-shadow: 
+        0px 12px 35px rgba(0,0,0,0.6),
+        0px 0px 50px rgba(78,150,255,0.15); 
+    min-width: 180px;
+    backdrop-filter: blur(20px);
+    animation: context-menu-appear 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes context-menu-appear {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+#node-context-menu .context-menu-item {
+    padding: 14px 24px; 
+    color: #e6f2ff;
+    cursor: pointer; 
+    font-size: 0.98em; 
+    transition: all 0.25s;
+    position: relative;
+}
+
+#node-context-menu .context-menu-item:hover {
+    background: #4e96ff44; 
+    color: #fff;
+    padding-left: 30px;
+}
+
+/* 用户标识 */
+#user-logo {
+    position: absolute; 
+    bottom: 24px; 
+    left: 50%;
+    transform: translateX(-50%);
+    color: #a8d0ffee; 
+    font-size: 1.1em; 
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    text-shadow: 0 0 15px #7ec8ff99;
+    z-index: 5; 
+    pointer-events: none;
+    white-space: nowrap; 
+    text-align: center;
+    letter-spacing: 1.5px;
+    font-weight: 500;
+}
+
+/* 状态指示器 */
+#status-indicator {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    background: rgba(18, 24, 48, 0.9);
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: 1px solid #4a90e244;
+    color: #a8d0ff;
+    font-size: 0.9em;
+    backdrop-filter: blur(20px);
+    display: none;
+    animation: status-fade-in 0.3s;
+}
+
+@keyframes status-fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 移动端适配优化 */
+@media (max-width: 768px) {
+    #celestial-menu-options {
+        min-width: 92vw; 
+        left: 50%;
+        transform: translateX(-50%);
+        right: auto; 
+        top: auto; 
+        bottom: 0; 
+        border-radius: 24px 24px 0 0;
+        box-shadow: 0 -10px 50px rgba(0,0,0,0.8);
+        padding: 24px 4vw 32px 4vw;
+        max-height: 75vh;
+        overflow-y: auto;
+    }
+    
+    #workspace-panel {
+        min-width: 90vw;
+        padding: 24px;
+    }
+    
+    .sub-panel {
+        left: 50%;
+        transform: translateX(-50%);
+        right: auto;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        min-width: 85vw;
+    }
+    
+    #celestial-menu-toggle { 
+        top: auto; 
+        bottom: 24px; 
+        right: 24px; 
+        width: 48px; 
+        height: 48px;
+    }
+    
+    #celestial-menu-toggle::after {
+        font-size: 22px;
+    }
+    
+    #quick-toolbar {
+        top: auto;
+        bottom: 24px;
+        padding: 6px 12px;
+        gap: 8px;
+    }
+    
+    .toolbar-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+    
+    .menu-header, #user-logo { 
+        font-size: 1.2em;
+    }
+    
+    .menu-item { 
+        font-size: 1.08em; 
+        padding: 16px 18px;
+    }
+    
+    .node-input { 
+        min-width: 160px; 
+        max-width: 85vw; 
+        font-size: 1.08em;
+    }
+    
+    .node-text {
+        font-size: 13px;
+    }
+    
+    .root-node .node-text {
+        font-size: 15px;
+    }
+}
+
+/* 高级动画优化 */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* 滚动条美化 */
+::-webkit-scrollbar { 
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.05);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(78,150,255,0.5);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(78,150,255,0.7);
+}
+
+/* 选择效果优化 */
+::selection {
+    background: #4e96ff66;
+    color: #fff;
+}
+
+/* 打印优化 */
+@media print {
+    body::before,
+    #celestial-menu-toggle,
+    #celestial-menu-options,
+    #quick-toolbar,
+    #workspace-panel,
+    .sub-panel,
+    #node-context-menu,
+    #status-indicator {
+        display: none !important;
+    }
+    
+    body {
+        background: white !important;
+    }
+    
+    .node-text {
+        color: #000 !important;
+        text-shadow: none !important;
+    }
+}
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- 量子控制中心 -->
+        <div id="celestial-menu-toggle" title="量子控制中心"></div>
+        
+        <!-- 快速工具栏 -->
+        <div id="quick-toolbar">
+            <div class="toolbar-btn" id="quick-add-child" title="添加子节点">+</div>
+            <div class="toolbar-btn" id="quick-toggle-text" title="显示/隐藏文本">👁</div>
+            <div class="toolbar-btn" id="quick-focus-root" title="聚焦根节点">⊙</div>
+            <div class="toolbar-btn" id="quick-export" title="快速导出">⬇</div>
+        </div>
+        
+        <!-- 主菜单面板 -->
+        <div id="celestial-menu-options">
+            <div class="menu-header">核心操作</div>
+            <div class="menu-item" id="addRootNode">+ 创建主节点</div>
+            <div class="menu-item" id="toggleTextVisibility">👁 文本显隐切换</div>
+            <div class="menu-item" id="workspaceManager">📁 工作区管理</div>
+            <div class="menu-item" id="clearMap">🗑 清空画布</div>
+            <div class="menu-item" id="exportJSON">⬇ 导出数据</div>
+            <div class="menu-item" id="importJSON">⬆ 导入数据</div>
+            <div class="menu-item" id="exportImage">📸 导出图片</div>
+            
+            <div class="menu-header">布局模式</div>
+            <div class="menu-item layout-option active" data-layout="free">✨ 自由布局</div>
+            <div class="menu-item layout-option" data-layout="tree">🌲 层级树图</div>
+            <div class="menu-item layout-option" data-layout="org">📊 组织架构</div>
+            <div class="menu-item layout-option" data-layout="fishbone">🐟 鱼骨分析</div>
+            
+            <div class="menu-header">视觉定制</div>
+            <div class="menu-item" id="bgPresets">🖼 预设背景</div>
+            <div class="menu-item" id="bgColor">🎨 自定义颜色</div>
+        </div>
+        
+        <!-- 工作区管理面板 -->
+        <div id="workspace-panel">
+            <div class="workspace-header">工作区管理中心</div>
+            <div class="workspace-list" id="workspaceList">
+                <!-- 动态生成工作区列表 -->
+            </div>
+            <input type="text" class="workspace-new-input" id="newWorkspaceName" placeholder="输入新工作区名称...">
+            <div class="workspace-panel-actions">
+                <button class="panel-btn" id="createWorkspace">创建工作区</button>
+                <button class="panel-btn secondary" id="closeWorkspacePanel">关闭</button>
+            </div>
+        </div>
+        
+        <!-- 背景预设面板 -->
+        <div id="bg-preset-panel" class="sub-panel">
+            <div class="sub-panel-header">背景主题</div>
+            <div class="bg-preset-item active" data-bg="url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1772&q=80')">深邃星空</div>
+            <div class="bg-preset-item" data-bg="url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?auto=format&fit=crop&w=1771&q=80')">紫色星云</div>
+            <div class="bg-preset-item" data-bg="url('https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?auto=format&fit=crop&w=1787&q=80')">璀璨银河</div>
+            <div class="bg-preset-item" data-bg="linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)">深蓝渐变</div>
+            <div class="bg-preset-item" data-bg="linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)">科技黑蓝</div>
+            <div class="bg-preset-item" data-bg="linear-gradient(135deg, #232526 0%, #414345 100%)">优雅灰度</div>
+        </div>
+        
+        <!-- 颜色选择面板 -->
+        <div id="color-picker-panel" class="sub-panel">
+            <div class="sub-panel-header">自定义背景色</div>
+            <input type="color" id="bgColorPicker" value="#0f142b">
+            <button id="applyColorBg">应用颜色</button>
+        </div>
+        
+        <!-- 思维导图容器 -->
+        <div id="mind-map-container">
+            <div id="mind-map-canvas"></div>
+            <svg id="lines-svg"></svg>
+        </div>
+        
+        <!-- 节点右键菜单 -->
+        <div id="node-context-menu">
+            <div class="context-menu-item" id="ctx-add-child">+ 添加子节点</div>
+            <div class="context-menu-item" id="ctx-edit-node">✏️ 编辑内容</div>
+            <div class="context-menu-item" id="ctx-delete-node">🗑 删除节点</div>
+            <div class="context-menu-item" id="ctx-focus-node">⊙ 聚焦此节点</div>
+        </div>
+        
+        <!-- 用户标识 -->
+        <div id="user-logo">钟意 - 星辰绘卷 · 量子架构</div>
+        
+        <!-- 状态指示器 -->
+        <div id="status-indicator"></div>
+    </div>
+    <script>
+// 量子架构思维导图系统 v2.1
+document.addEventListener('DOMContentLoaded', () => {
+    // DOM引用映射
+    const DOM = {
+        // 主控制
+        menuToggle: document.getElementById('celestial-menu-toggle'),
+        menuOptions: document.getElementById('celestial-menu-options'),
+        
+        // 快速工具栏
+        quickToolbar: document.getElementById('quick-toolbar'),
+        quickAddChild: document.getElementById('quick-add-child'),
+        quickToggleText: document.getElementById('quick-toggle-text'),
+        quickFocusRoot: document.getElementById('quick-focus-root'),
+        quickExport: document.getElementById('quick-export'),
+        
+        // 菜单项
+        addRootNode: document.getElementById('addRootNode'),
+        toggleTextVisibility: document.getElementById('toggleTextVisibility'),
+        workspaceManager: document.getElementById('workspaceManager'),
+        clearMap: document.getElementById('clearMap'),
+        importJSON: document.getElementById('importJSON'),
+        exportJSON: document.getElementById('exportJSON'),
+        exportImage: document.getElementById('exportImage'),
+        
+        // 工作区管理
+        workspacePanel: document.getElementById('workspace-panel'),
+        workspaceList: document.getElementById('workspaceList'),
+        newWorkspaceName: document.getElementById('newWorkspaceName'),
+        createWorkspace: document.getElementById('createWorkspace'),
+        closeWorkspacePanel: document.getElementById('closeWorkspacePanel'),
+        
+        // 画布
+        container: document.getElementById('mind-map-container'),
+        canvas: document.getElementById('mind-map-canvas'),
+        linesSvg: document.getElementById('lines-svg'),
+        
+        // 右键菜单
+        contextMenu: document.getElementById('node-context-menu'),
+        ctxAddChild: document.getElementById('ctx-add-child'),
+        ctxEditNode: document.getElementById('ctx-edit-node'),
+        ctxDeleteNode: document.getElementById('ctx-delete-node'),
+        ctxFocusNode: document.getElementById('ctx-focus-node'),
+        
+        // 背景设置
+        bgPresets: document.getElementById('bgPresets'),
+        bgColor: document.getElementById('bgColor'),
+        bgPresetPanel: document.getElementById('bg-preset-panel'),
+        colorPickerPanel: document.getElementById('color-picker-panel'),
+        applyColorBg: document.getElementById('applyColorBg'),
+        bgColorPicker: document.getElementById('bgColorPicker'),
+        
+        // 其他
+        statusIndicator: document.getElementById('status-indicator')
+    };
+
+    // 全局状态管理
+    const State = {
+        nodes: [],
+        nodeIdCounter: 0,
+        selectedNodeId: null,
+        isMenuOpen: false,
+        draggingNode: null,
+        dragOffset: { x: 0, y: 0 },
+        activeInput: null,
+        panZoom: { scale: 1, offsetX: 0, offsetY: 0, isPanning: false, lastPanX: 0, lastPanY: 0 },
+        currentLayout: 'free',
+        currentBackground: `url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1772&q=80')`,
+        textVisible: true,
+        currentWorkspaceId: 'default',
+        workspaces: {}
+    };
+
+    // 布局配置
+    const LAYOUT_CONFIG = {
+        tree: { nodeSpacingX: 220, nodeSpacingY: 90, startX: 120 },
+        org: { nodeSpacingX: 160, nodeSpacingY: 130, startY: 120 },
+        fishbone: { mainSpacing: 320, branchSpacingY: 110, branchSpacingX: 170 }
+    };
+
+    // === 工作区管理系统 ===
+    function initWorkspaceSystem() {
+        const savedWorkspaces = localStorage.getItem('quantum_workspaces');
+        if (savedWorkspaces) {
+            try {
+                State.workspaces = JSON.parse(savedWorkspaces);
+            } catch (e) {
+                State.workspaces = {};
+            }
+        }
+        
+        // 确保至少有一个默认工作区
+        if (!State.workspaces.default) {
+            State.workspaces.default = {
+                id: 'default',
+                name: '默认工作区',
+                data: {
+                    nodes: [],
+                    nodeIdCounter: 0,
+                    panZoom: { scale: 1, offsetX: 0, offsetY: 0 },
+                    currentLayout: 'free',
+                    currentBackground: State.currentBackground,
+                    textVisible: true
+                },
+                createdAt: Date.now(),
+                lastModified: Date.now()
+            };
+        }
+    }
+
+    function saveWorkspaces() {
+        localStorage.setItem('quantum_workspaces', JSON.stringify(State.workspaces));
+    }
+
+    function saveCurrentWorkspace() {
+        const workspace = State.workspaces[State.currentWorkspaceId];
+        if (workspace) {
+            workspace.data = {
+                nodes: State.nodes,
+                nodeIdCounter: State.nodeIdCounter,
+                panZoom: State.panZoom,
+                currentLayout: State.currentLayout,
+                currentBackground: State.currentBackground,
+                textVisible: State.textVisible
+            };
+            workspace.lastModified = Date.now();
+            saveWorkspaces();
+        }
+    }
+
+    function loadWorkspace(workspaceId) {
+        saveCurrentWorkspace(); // 保存当前工作区
+        
+        const workspace = State.workspaces[workspaceId];
+        if (!workspace) return;
+        
+        State.currentWorkspaceId = workspaceId;
+        const data = workspace.data;
+        
+        // 清空画布
+        DOM.canvas.innerHTML = '';
+        DOM.linesSvg.innerHTML = '';
+        
+        // 加载数据
+        State.nodes = data.nodes || [];
+        State.nodeIdCounter = data.nodeIdCounter || 0;
+        State.currentLayout = data.currentLayout || 'free';
+        State.currentBackground = data.currentBackground || State.currentBackground;
+        State.textVisible = data.textVisible !== false;
+        State.panZoom = { ...State.panZoom, ...data.panZoom };
+        
+        // 应用状态
+        applyBackground();
+        applyTextVisibility();
+        applyCanvasTransform();
+        
+        // 更新UI状态
+        document.querySelectorAll('.layout-option').forEach(item => {
+            item.classList.toggle('active', item.dataset.layout === State.currentLayout);
+        });
+        
+        // 渲染节点
+        State.nodes.forEach(renderNode);
+        if (State.currentLayout !== 'free') {
+            applyLayout(State.currentLayout);
+        }
+        drawLines();
+        
+        showStatus(`已切换到工作区：${workspace.name}`);
+    }
+
+    function createNewWorkspace(name) {
+        const id = 'workspace_' + Date.now();
+        State.workspaces[id] = {
+            id: id,
+            name: name || '新工作区',
+            data: {
+                nodes: [],
+                nodeIdCounter: 0,
+                panZoom: { scale: 1, offsetX: 0, offsetY: 0 },
+                currentLayout: 'free',
+                currentBackground: State.currentBackground,
+                textVisible: true
+            },
+            createdAt: Date.now(),
+            lastModified: Date.now()
+        };
+        saveWorkspaces();
+        loadWorkspace(id);
+        updateWorkspaceList();
+    }
+
+    function deleteWorkspace(workspaceId) {
+        if (workspaceId === 'default') {
+            showStatus('默认工作区无法删除');
+            return;
+        }
+        
+        if (confirm('确定要删除此工作区吗？此操作无法撤销。')) {
+            delete State.workspaces[workspaceId];
+            saveWorkspaces();
+            
+            if (State.currentWorkspaceId === workspaceId) {
+                loadWorkspace('default');
+            }
+            updateWorkspaceList();
+            showStatus('工作区已删除');
+        }
+    }
+
+    function renameWorkspace(workspaceId, newName) {
+        const workspace = State.workspaces[workspaceId];
+        if (workspace && newName.trim()) {
+            workspace.name = newName.trim();
+            workspace.lastModified = Date.now();
+            saveWorkspaces();
+            updateWorkspaceList();
+            showStatus('工作区已重命名');
+        }
+    }
+
+    function updateWorkspaceList() {
+        DOM.workspaceList.innerHTML = '';
+        
+        Object.values(State.workspaces).forEach(workspace => {
+            const item = document.createElement('div');
+            item.className = 'workspace-item';
+            if (workspace.id === State.currentWorkspaceId) {
+                item.classList.add('active');
+            }
+            
+            const nameEl = document.createElement('div');
+            nameEl.className = 'workspace-name';
+            nameEl.textContent = workspace.name;
+            
+            const actions = document.createElement('div');
+            actions.className = 'workspace-actions';
+            
+            const loadBtn = document.createElement('button');
+            loadBtn.className = 'workspace-btn';
+            loadBtn.textContent = '加载';
+            loadBtn.onclick = () => {
+                loadWorkspace(workspace.id);
+                DOM.workspacePanel.style.display = 'none';
+            };
+            
+            const renameBtn = document.createElement('button');
+            renameBtn.className = 'workspace-btn';
+            renameBtn.textContent = '重命名';
+            renameBtn.onclick = () => {
+                const newName = prompt('输入新名称：', workspace.name);
+                if (newName) renameWorkspace(workspace.id, newName);
+            };
+            
+            actions.appendChild(loadBtn);
+            actions.appendChild(renameBtn);
+            
+            if (workspace.id !== 'default') {
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'workspace-btn';
+                deleteBtn.textContent = '删除';
+                deleteBtn.onclick = () => deleteWorkspace(workspace.id);
+                actions.appendChild(deleteBtn);
+            }
+            
+            item.appendChild(nameEl);
+            item.appendChild(actions);
+            DOM.workspaceList.appendChild(item);
+        });
+    }
+
+    // === 文本显隐控制系统 ===
+    function toggleTextVisibility() {
+        State.textVisible = !State.textVisible;
+        applyTextVisibility();
+        
+        // 更新UI状态
+        DOM.toggleTextVisibility.classList.toggle('toggle-active', !State.textVisible);
+        DOM.quickToggleText.classList.toggle('active', !State.textVisible);
+        
+        saveCurrentWorkspace();
+        showStatus(State.textVisible ? '文本已显示' : '文本已隐藏');
+    }
+
+    function applyTextVisibility() {
+        document.body.classList.toggle('text-hidden', !State.textVisible);
+    }
+
+    // === 核心节点操作 ===
+    function getNextNodeId() { 
+        return `node-${State.nodeIdCounter++}`; 
+    }
+    
+    function getNodeById(id) { 
+        return State.nodes.find(n => n.id === id); 
+    }
+    
+    function getNodeElementById(id) { 
+        return DOM.canvas.querySelector(`.node[data-id="${id}"]`); 
+    }
+
+    function calculateNodeLevel(parentId) {
+        if (!parentId) return 0;
+        const parent = getNodeById(parentId);
+        return parent ? parent.level + 1 : 0;
+    }
+
+    function saveData() {
+        saveCurrentWorkspace();
+    }
+
+    function applyCanvasTransform() {
+        const transform = `translate(${State.panZoom.offsetX}px,${State.panZoom.offsetY}px) scale(${State.panZoom.scale})`;
+        DOM.canvas.style.transform = transform;
+        DOM.linesSvg.style.transform = transform;
+        DOM.linesSvg.style.transformOrigin = '0 0';
+    }
+
+    function renderNode(node) {
+        const nodeEl = document.createElement('div');
+        nodeEl.className = 'node';
+        if (node.level === 0) nodeEl.classList.add('root-node');
+        nodeEl.dataset.id = node.id;
+        nodeEl.style.left = `${node.x}px`;
+        nodeEl.style.top = `${node.y}px`;
+        
+        // 创建文本显示元素
+        const textEl = document.createElement('span');
+        textEl.className = 'node-text';
+        textEl.textContent = node.text || '';
+        nodeEl.appendChild(textEl);
+        
+        DOM.canvas.appendChild(nodeEl);
+
+        // 事件绑定
+        nodeEl.addEventListener('mousedown', e => handleNodeMouseDown(e, node.id));
+        nodeEl.addEventListener('dblclick', () => startNodeEdit(node.id));
+        nodeEl.addEventListener('contextmenu', e => showNodeContextMenu(e, node.id));
+    }
+
+    function selectNode(nodeId) {
+        if (State.selectedNodeId && State.selectedNodeId !== nodeId) {
+            getNodeElementById(State.selectedNodeId)?.classList.remove('selected');
+        }
+        
+        if (nodeId) {
+            getNodeElementById(nodeId)?.classList.add('selected');
+            State.selectedNodeId = nodeId;
+        } else {
+            if (State.selectedNodeId) {
+                getNodeElementById(State.selectedNodeId)?.classList.remove('selected');
+            }
+            State.selectedNodeId = null;
+        }
+    }
+
+    function createNode(parentId, text, x, y) {
+        const id = getNextNodeId();
+        const level = calculateNodeLevel(parentId);
+        const nodeSize = level === 0 ? 40 : 26;
+        let canvasX = x, canvasY = y;
+
+        if (x === undefined || y === undefined) {
+            if (State.currentLayout === 'free' || !parentId) {
+                const centerX = (DOM.container.offsetWidth / 2 - State.panZoom.offsetX) / State.panZoom.scale;
+                const centerY = (DOM.container.offsetHeight / 2 - State.panZoom.offsetY) / State.panZoom.scale;
+                canvasX = parentId ? getNodeById(parentId).x + 120 : centerX - nodeSize / 2;
+                canvasY = parentId ? getNodeById(parentId).y + 70 : centerY - nodeSize / 2;
+            } else {
+                canvasX = 0;
+                canvasY = 0;
+            }
+        }
+        
+        const node = { id, parentId, text: text || "", x: canvasX, y: canvasY, level };
+        State.nodes.push(node);
+        renderNode(node);
+        
+        if (State.currentLayout !== 'free') {
+            applyLayout(State.currentLayout);
+        }
+        
+        drawLines();
+        selectNode(id);
+        if (!text) startNodeEdit(id);
+        saveData();
+        return node;
+    }
+
+    function startNodeEdit(nodeId) {
+        if (State.activeInput) State.activeInput.blur();
+        
+        const node = getNodeById(nodeId);
+        const nodeEl = getNodeElementById(nodeId);
+        if (!node || !nodeEl) return;
+        
+        selectNode(nodeId);
+        
+        // 显示文本（即使全局隐藏）
+        const textEl = nodeEl.querySelector('.node-text');
+        if (textEl) {
+            textEl.style.display = 'none';
+            if (!State.textVisible) {
+                textEl.classList.add('editing-temp-show');
+            }
+        }
+        
+        const inputEl = document.createElement('textarea');
+        inputEl.className = 'node-input';
+        inputEl.value = node.text;
+        inputEl.rows = 1;
+        State.activeInput = inputEl;
+        
+        const nodeRect = nodeEl.getBoundingClientRect();
+        const containerRect = DOM.container.getBoundingClientRect();
+        const nodeX = parseFloat(nodeEl.style.left);
+        const nodeY = parseFloat(nodeEl.style.top);
+        const nodeW = nodeEl.offsetWidth;
+        
+        // 输入框位置计算
+        inputEl.style.width = `${Math.max(180, nodeW + 140)}px`;
+        inputEl.style.left = `${nodeX + nodeW / 2 - 90}px`;
+        inputEl.style.top = `${nodeY - 60}px`;
+
+        DOM.canvas.appendChild(inputEl);
+        inputEl.focus(); 
+        inputEl.select();
+
+        // 自动调整高度
+        function adjustHeight() {
+            inputEl.style.height = 'auto';
+            inputEl.style.height = inputEl.scrollHeight + 'px';
+        }
+        
+        inputEl.addEventListener('input', adjustHeight);
+        adjustHeight();
+
+        inputEl.addEventListener('blur', finishEdit);
+        inputEl.addEventListener('keydown', e => {
+            if (e.key === 'Enter' && !e.shiftKey) { 
+                e.preventDefault(); 
+                finishEdit(); 
+            } else if (e.key === 'Escape') { 
+                inputEl.value = node.text; 
+                finishEdit(); 
+            }
+        });
+
+        function finishEdit() {
+            if (!inputEl.parentNode) return;
+            node.text = inputEl.value.trim();
+            if (textEl) {
+                textEl.style.display = '';
+                textEl.textContent = node.text;
+                textEl.classList.remove('editing-temp-show');
+            }
+            inputEl.parentNode.removeChild(inputEl);
+            State.activeInput = null;
+            saveData();
+        }
+    }
+
+    // === 布局算法系统 ===
+    function applyLayout(layoutType) {
+        State.currentLayout = layoutType;
+        
+        // 更新菜单激活状态
+        document.querySelectorAll('.layout-option').forEach(item => {
+            item.classList.toggle('active', item.dataset.layout === layoutType);
+        });
+        
+        if (layoutType === 'free') {
+            saveData();
+            return;
+        }
+        
+        const rootNodes = State.nodes.filter(n => n.level === 0);
+        if (rootNodes.length === 0) return;
+        
+        switch (layoutType) {
+            case 'tree':
+                applyTreeLayout(rootNodes[0]);
+                break;
+            case 'org':
+                applyOrgLayout(rootNodes[0]);
+                break;
+            case 'fishbone':
+                applyFishboneLayout(rootNodes[0]);
+                break;
+        }
+        
+        drawLines();
+        saveData();
+    }
+
+    function applyTreeLayout(rootNode) {
+        const visited = new Set();
+        const config = LAYOUT_CONFIG.tree;
+        
+        function layoutSubtree(node, x, y) {
+            if (visited.has(node.id)) return { width: 0, height: 0 };
+            visited.add(node.id);
+            
+            node.x = x;
+            node.y = y;
+            
+            const children = State.nodes.filter(n => n.parentId === node.id);
+            let totalHeight = 0;
+            
+            children.forEach((child, index) => {
+                const childY = y + totalHeight;
+                const subtree = layoutSubtree(child, x + config.nodeSpacingX, childY);
+                totalHeight += subtree.height + (index < children.length - 1 ? config.nodeSpacingY : 0);
+            });
+            
+            const nodeEl = getNodeElementById(node.id);
+            if (nodeEl) {
+                nodeEl.style.left = `${node.x}px`;
+                nodeEl.style.top = `${node.y}px`;
+            }
+            
+            return { 
+                width: config.nodeSpacingX, 
+                height: Math.max(totalHeight || config.nodeSpacingY, nodeEl ? nodeEl.offsetHeight : 40) 
+            };
+        }
+        
+        const centerY = (DOM.container.offsetHeight / 2 - State.panZoom.offsetY) / State.panZoom.scale;
+        layoutSubtree(rootNode, config.startX, centerY - 20);
+    }
+
+    function applyOrgLayout(rootNode) {
+        const visited = new Set();
+        const config = LAYOUT_CONFIG.org;
+        const levels = [];
+        
+        function collectLevels(node, level) {
+            if (visited.has(node.id)) return;
+            visited.add(node.id);
+            
+            if (!levels[level]) levels[level] = [];
+            levels[level].push(node);
+            
+            const children = State.nodes.filter(n => n.parentId === node.id);
+            children.forEach(child => collectLevels(child, level + 1));
+        }
+        
+        collectLevels(rootNode, 0);
+        
+        const centerX = (DOM.container.offsetWidth / 2 - State.panZoom.offsetX) / State.panZoom.scale;
+        
+        levels.forEach((levelNodes, level) => {
+            const totalWidth = levelNodes.length * config.nodeSpacingX;
+            const startX = centerX - totalWidth / 2;
+            
+            levelNodes.forEach((node, index) => {
+                node.x = startX + index * config.nodeSpacingX;
+                node.y = config.startY + level * config.nodeSpacingY;
+                
+                const nodeEl = getNodeElementById(node.id);
+                if (nodeEl) {
+                    nodeEl.style.left = `${node.x}px`;
+                    nodeEl.style.top = `${node.y}px`;
+                }
+            });
+        });
+    }
+
+    function applyFishboneLayout(rootNode) {
+        const config = LAYOUT_CONFIG.fishbone;
+        const centerX = (DOM.container.offsetWidth / 2 - State.panZoom.offsetX) / State.panZoom.scale;
+        const centerY = (DOM.container.offsetHeight / 2 - State.panZoom.offsetY) / State.panZoom.scale;
+        
+        rootNode.x = centerX;
+        rootNode.y = centerY;
+        
+        const rootEl = getNodeElementById(rootNode.id);
+        if (rootEl) {
+            rootEl.style.left = `${rootNode.x}px`;
+            rootEl.style.top = `${rootNode.y}px`;
+        }
+        
+        const mainBranches = State.nodes.filter(n => n.parentId === rootNode.id);
+        const halfCount = Math.ceil(mainBranches.length / 2);
+        
+        mainBranches.forEach((branch, index) => {
+            const isTop = index < halfCount;
+            const posIndex = isTop ? index : index - halfCount;
+            
+            branch.x = centerX - config.mainSpacing + posIndex * 140;
+            branch.y = centerY + (isTop ? -config.branchSpacingY : config.branchSpacingY);
+            
+            const branchEl = getNodeElementById(branch.id);
+            if (branchEl) {
+                branchEl.style.left = `${branch.x}px`;
+                branchEl.style.top = `${branch.y}px`;
+            }
+            
+            layoutFishboneSubBranches(branch, isTop);
+        });
+    }
+
+    function layoutFishboneSubBranches(parentNode, isTop) {
+        const config = LAYOUT_CONFIG.fishbone;
+        const children = State.nodes.filter(n => n.parentId === parentNode.id);
+        
+        children.forEach((child, index) => {
+            child.x = parentNode.x + config.branchSpacingX;
+            child.y = parentNode.y + (isTop ? -35 : 35) * (index + 1);
+            
+            const childEl = getNodeElementById(child.id);
+            if (childEl) {
+                childEl.style.left = `${child.x}px`;
+                childEl.style.top = `${child.y}px`;
+            }
+            
+            layoutFishboneSubBranches(child, isTop);
+        });
+    }
+
+    // === 连线渲染系统 ===
+    function drawLines() {
+        DOM.linesSvg.innerHTML = '';
+        
+        State.nodes.forEach(node => {
+            if (!node.parentId) return;
+            const parent = getNodeById(node.parentId);
+            if (!parent) return;
+            const parentEl = getNodeElementById(parent.id);
+            const childEl = getNodeElementById(node.id);
+            if (!parentEl || !childEl) return;
+            
+            const px = parent.x + parentEl.offsetWidth / 2;
+            const py = parent.y + parentEl.offsetHeight / 2;
+            const cx = node.x + childEl.offsetWidth / 2;
+            const cy = node.y + childEl.offsetHeight / 2;
+            
+            if (State.currentLayout === 'tree' || State.currentLayout === 'org') {
+                // 曲线路径
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                const midX = (px + cx) / 2;
+                const d = `M ${px} ${py} Q ${midX} ${py} ${midX} ${(py + cy) / 2} T ${cx} ${cy}`;
+                path.setAttribute('d', d);
+                path.setAttribute('class', 'connection-path');
+                DOM.linesSvg.appendChild(path);
+            } else {
+                // 直线
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', px); 
+                line.setAttribute('y1', py);
+                line.setAttribute('x2', cx); 
+                line.setAttribute('y2', cy);
+                line.setAttribute('class', 'connection-line');
+                DOM.linesSvg.appendChild(line);
+            }
+        });
+    }
+
+    // === 拖拽系统 ===
+    function handleNodeMouseDown(e, nodeId) {
+        if (e.button !== 0) return;
+        e.stopPropagation();
+        if (State.activeInput) State.activeInput.blur();
+        
+        const nodeEl = getNodeElementById(nodeId);
+        const node = getNodeById(nodeId);
+        if (!nodeEl || !node) return;
+        
+        selectNode(nodeId);
+        State.draggingNode = nodeEl;
+        const containerRect = DOM.container.getBoundingClientRect();
+        const startX = (e.clientX - containerRect.left - State.panZoom.offsetX) / State.panZoom.scale;
+        const startY = (e.clientY - containerRect.top - State.panZoom.offsetY) / State.panZoom.scale;
+        State.dragOffset.x = startX - node.x;
+        State.dragOffset.y = startY - node.y;
+        
+        document.addEventListener('mousemove', handleNodeMouseMove);
+        document.addEventListener('mouseup', handleNodeMouseUp);
+        nodeEl.style.cursor = 'grabbing'; 
+        nodeEl.style.zIndex = 25;
+    }
+
+    function handleNodeMouseMove(e) {
+        if (!State.draggingNode) return;
+        const nodeId = State.draggingNode.dataset.id;
+        const node = getNodeById(nodeId);
+        const containerRect = DOM.container.getBoundingClientRect();
+        const mouseX = (e.clientX - containerRect.left - State.panZoom.offsetX) / State.panZoom.scale;
+        const mouseY = (e.clientY - containerRect.top - State.panZoom.offsetY) / State.panZoom.scale;
+        
+        // 边距限制
+        const margin = 20;
+        const maxX = (containerRect.width - State.panZoom.offsetX) / State.panZoom.scale - State.draggingNode.offsetWidth - margin;
+        const maxY = (containerRect.height - State.panZoom.offsetY) / State.panZoom.scale - State.draggingNode.offsetHeight - margin;
+        
+        node.x = Math.max(margin, Math.min(mouseX - State.dragOffset.x, maxX));
+        node.y = Math.max(margin, Math.min(mouseY - State.dragOffset.y, maxY));
+        
+        State.draggingNode.style.left = `${node.x}px`;
+        State.draggingNode.style.top = `${node.y}px`;
+        drawLines();
+    }
+
+    function handleNodeMouseUp() {
+        if (!State.draggingNode) return;
+        State.draggingNode.style.cursor = 'pointer';
+        State.draggingNode.style.zIndex = 10;
+        State.draggingNode = null;
+        document.removeEventListener('mousemove', handleNodeMouseMove);
+        document.removeEventListener('mouseup', handleNodeMouseUp);
+        saveData();
+    }
+
+    // === 画布平移与缩放 ===
+    DOM.container.addEventListener('mousedown', e => {
+        if (e.target !== DOM.container && e.target !== DOM.canvas && e.target !== DOM.linesSvg) return;
+        if (e.button !== 0 && e.button !== 1) return;
+        if (State.activeInput) State.activeInput.blur();
+        
+        State.panZoom.isPanning = true;
+        State.panZoom.lastPanX = e.clientX;
+        State.panZoom.lastPanY = e.clientY;
+        DOM.container.classList.add('grabbing');
+        selectNode(null); 
+        hideContextMenu(); 
+        hideMenus();
+    });
+    
+    document.addEventListener('mousemove', e => {
+        if (!State.panZoom.isPanning) return;
+        const dx = e.clientX - State.panZoom.lastPanX;
+        const dy = e.clientY - State.panZoom.lastPanY;
+        State.panZoom.offsetX += dx;
+        State.panZoom.offsetY += dy;
+        State.panZoom.lastPanX = e.clientX; 
+        State.panZoom.lastPanY = e.clientY;
+        applyCanvasTransform();
+    });
+    
+    document.addEventListener('mouseup', () => {
+        if (State.panZoom.isPanning) {
+            State.panZoom.isPanning = false;
+            DOM.container.classList.remove('grabbing');
+            saveData();
+        }
+    });
+    
+    DOM.container.addEventListener('wheel', e => {
+        e.preventDefault();
+        if (State.activeInput) State.activeInput.blur();
+        
+        const scaleAmount = 1.1;
+        const containerRect = DOM.container.getBoundingClientRect();
+        const mouseX = e.clientX - containerRect.left;
+        const mouseY = e.clientY - containerRect.top;
+        
+        const prevScale = State.panZoom.scale;
+        
+        if (e.deltaY < 0) {
+            State.panZoom.scale = Math.min(State.panZoom.scale * scaleAmount, 5);
+        } else {
+            State.panZoom.scale = Math.max(State.panZoom.scale / scaleAmount, 0.1);
+        }
+        
+        const scaleDiff = State.panZoom.scale / prevScale;
+        State.panZoom.offsetX = mouseX - (mouseX - State.panZoom.offsetX) * scaleDiff;
+        State.panZoom.offsetY = mouseY - (mouseY - State.panZoom.offsetY) * scaleDiff;
+        
+        applyCanvasTransform(); 
+        drawLines(); 
+        saveData();
+    });
+
+    // === 智能聚焦系统 ===
+    function focusOnNode(nodeId) {
+        const node = getNodeById(nodeId);
+        const nodeEl = getNodeElementById(nodeId);
+        if (!node || !nodeEl) return;
+        
+        const containerRect = DOM.container.getBoundingClientRect();
+        const targetScale = 1.5;
+        
+        State.panZoom.scale = targetScale;
+        State.panZoom.offsetX = containerRect.width / 2 - (node.x + nodeEl.offsetWidth / 2) * targetScale;
+        State.panZoom.offsetY = containerRect.height / 2 - (node.y + nodeEl.offsetHeight / 2) * targetScale;
+        
+        applyCanvasTransform();
+        drawLines();
+        selectNode(nodeId);
+        saveData();
+        
+        showStatus('已聚焦到节点');
+    }
+
+    function focusOnRootNode() {
+        const rootNode = State.nodes.find(n => n.level === 0);
+        if (rootNode) {
+            focusOnNode(rootNode.id);
+        } else {
+            showStatus('未找到根节点');
+        }
+    }
+
+    // === 右键菜单系统 ===
+    let contextMenuNodeId = null;
+    
+    function showNodeContextMenu(e, nodeId) {
+        e.preventDefault();
+        if (State.activeInput) State.activeInput.blur();
+        selectNode(nodeId);
+        contextMenuNodeId = nodeId;
+        DOM.contextMenu.style.display = 'block';
+        
+        const menuWidth = DOM.contextMenu.offsetWidth;
+        const menuHeight = DOM.contextMenu.offsetHeight;
+        let x = e.clientX, y = e.clientY;
+        
+        if (x + menuWidth > window.innerWidth) x = window.innerWidth - menuWidth - 5;
+        if (y + menuHeight > window.innerHeight) y = window.innerHeight - menuHeight - 5;
+        
+        DOM.contextMenu.style.left = `${x}px`;
+        DOM.contextMenu.style.top = `${y}px`;
+    }
+    
+    function hideContextMenu() {
+        DOM.contextMenu.style.display = 'none';
+        contextMenuNodeId = null;
+    }
+
+    // === 节点删除系统 ===
+    function deleteNodeRecursive(nodeId) {
+        const children = State.nodes.filter(n => n.parentId === nodeId);
+        children.forEach(child => deleteNodeRecursive(child.id));
+        
+        const nodeEl = getNodeElementById(nodeId);
+        if (nodeEl) nodeEl.remove();
+        
+        State.nodes = State.nodes.filter(n => n.id !== nodeId);
+        
+        if (State.selectedNodeId === nodeId) selectNode(null);
+    }
+    
+    function handleDeleteNode(nodeId) {
+        if (!nodeId || !getNodeById(nodeId)) return;
+        
+        if (confirm('确定要删除此节点及其所有子节点吗？')) {
+            deleteNodeRecursive(nodeId);
+            drawLines();
+            saveData();
+            showStatus('节点已删除');
+        }
+    }
+
+    // === 菜单系统 ===
+    function toggleMenu() {
+        State.isMenuOpen = !State.isMenuOpen;
+        DOM.menuOptions.style.display = State.isMenuOpen ? 'block' : 'none';
+    }
+    
+    function hideMenus() {
+        if (State.isMenuOpen) {
+            DOM.menuOptions.style.display = 'none';
+            State.isMenuOpen = false;
+        }
+        DOM.bgPresetPanel.style.display = 'none';
+        DOM.colorPickerPanel.style.display = 'none';
+        DOM.workspacePanel.style.display = 'none';
+    }
+
+    // === 背景系统 ===
+    function applyBackground() {
+        if (State.currentBackground.startsWith('#')) {
+            document.body.style.background = State.currentBackground;
+        } else {
+            document.body.style.background = `${State.currentBackground} center/cover no-repeat`;
+            document.body.style.backgroundColor = '#0f142b';
+        }
+    }
+
+    // === 状态提示系统 ===
+    function showStatus(message, duration = 2000) {
+        DOM.statusIndicator.textContent = message;
+        DOM.statusIndicator.style.display = 'block';
+        
+        setTimeout(() => {
+            DOM.statusIndicator.style.display = 'none';
+        }, duration);
+    }
+
+    // === 导入导出系统 ===
+    function exportWorkspaceData() {
+        saveCurrentWorkspace();
+        const workspace = State.workspaces[State.currentWorkspaceId];
+        if (!workspace) return;
+        
+        const exportData = {
+            workspaceName: workspace.name,
+            exportDate: new Date().toISOString(),
+            data: workspace.data
+        };
+        
+        const json = JSON.stringify(exportData, null, 2);
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `思维导图_${workspace.name}_${new Date().toISOString().slice(0, 10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showStatus('导出成功');
+    }
+
+    function importWorkspaceData(fileInput) {
+        const file = fileInput.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = e => {
+            try {
+                const imported = JSON.parse(e.target.result);
+                if (imported && imported.data) {
+                    const workspaceName = imported.workspaceName || '导入的工作区';
+                    createNewWorkspace(workspaceName);
+                    
+                    // 加载导入的数据到新工作区
+                    const newWorkspaceId = Object.keys(State.workspaces).pop();
+                    State.workspaces[newWorkspaceId].data = imported.data;
+                    saveWorkspaces();
+                    loadWorkspace(newWorkspaceId);
+                    
+                    showStatus('导入成功');
+                } else {
+                    showStatus('文件格式不正确');
+                }
+            } catch (err) {
+                showStatus('导入失败：' + err.message);
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    // === 事件绑定 ===
+    
+    // 主菜单
+    DOM.menuToggle.addEventListener('click', e => {
+        e.stopPropagation();
+        if (State.activeInput) State.activeInput.blur();
+        toggleMenu();
+    });
+    
+    // 快速工具栏
+    DOM.quickAddChild.addEventListener('click', () => {
+        if (State.selectedNodeId) {
+            const parent = getNodeById(State.selectedNodeId);
+            if (parent) {
+                createNode(State.selectedNodeId, "", parent.x + 150, parent.y + 80);
+            }
+        } else {
+            showStatus('请先选择一个节点');
+        }
+    });
+    
+    DOM.quickToggleText.addEventListener('click', toggleTextVisibility);
+    DOM.quickFocusRoot.addEventListener('click', focusOnRootNode);
+    DOM.quickExport.addEventListener('click', exportWorkspaceData);
+    
+    // 菜单项
+    DOM.addRootNode.addEventListener('click', () => {
+        if (State.activeInput) State.activeInput.blur();
+        const rootExists = State.nodes.some(n => n.level === 0);
+        if (rootExists) {
+            showStatus('已存在根节点');
+            return;
+        }
+        const x = DOM.container.offsetWidth / 2;
+        const y = DOM.container.offsetHeight / 2;
+        createNode(null, "核心主题", x, y);
+        hideMenus();
+    });
+    
+    DOM.toggleTextVisibility.addEventListener('click', () => {
+        toggleTextVisibility();
+        hideMenus();
+    });
+    
+    DOM.workspaceManager.addEventListener('click', () => {
+        updateWorkspaceList();
+        DOM.workspacePanel.style.display = 'block';
+        hideMenus();
+    });
+    
+    DOM.clearMap.addEventListener('click', () => {
+        if (State.activeInput) State.activeInput.blur();
+        if (State.nodes.length === 0) {
+            showStatus('画布已经是空的');
+            return;
+        }
+        if (confirm('确定要清空当前工作区的所有节点吗？')) {
+            DOM.canvas.innerHTML = ''; 
+            DOM.linesSvg.innerHTML = '';
+            State.nodes = []; 
+            State.nodeIdCounter = 0; 
+            State.selectedNodeId = null;
+            State.currentLayout = 'free';
+            State.panZoom = { scale: 1, offsetX: 0, offsetY: 0, isPanning: false, lastPanX: 0, lastPanY: 0 };
+            applyCanvasTransform(); 
+            saveData();
+            showStatus('画布已清空');
+        }
+        hideMenus();
+    });
+    
+    DOM.exportJSON.addEventListener('click', () => {
+        if (State.activeInput) State.activeInput.blur();
+        if (State.nodes.length === 0) { 
+            showStatus('没有数据可以导出'); 
+            return; 
+        }
+        exportWorkspaceData();
+        hideMenus();
+    });
+    
+    DOM.importJSON.addEventListener('click', () => {
+        if (State.activeInput) State.activeInput.blur();
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file'; 
+        fileInput.accept = '.json,application/json';
+        fileInput.onchange = () => importWorkspaceData(fileInput);
+        fileInput.click();
+        hideMenus();
+    });
+    
+    DOM.exportImage.addEventListener('click', () => {
+        if (State.activeInput) State.activeInput.blur();
+        showStatus('图片导出功能开发中，请使用浏览器截图');
+        hideMenus();
+    });
+
+    // 工作区管理
+    DOM.createWorkspace.addEventListener('click', () => {
+        const name = DOM.newWorkspaceName.value.trim();
+        if (name) {
+            createNewWorkspace(name);
+            DOM.newWorkspaceName.value = '';
+            DOM.workspacePanel.style.display = 'none';
+        } else {
+            showStatus('请输入工作区名称');
+        }
+    });
+    
+    DOM.closeWorkspacePanel.addEventListener('click', () => {
+        DOM.workspacePanel.style.display = 'none';
+    });
+    
+    DOM.newWorkspaceName.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+            DOM.createWorkspace.click();
+        }
+    });
+
+    // 布局切换
+    document.querySelectorAll('.layout-option').forEach(item => {
+        item.addEventListener('click', () => {
+            const layout = item.dataset.layout;
+            if (layout !== State.currentLayout) {
+                applyLayout(layout);
+            }
+            hideMenus();
+        });
+    });
+
+    // 背景设置
+    DOM.bgPresets.addEventListener('click', e => {
+        e.stopPropagation();
+        DOM.bgPresetPanel.style.display = DOM.bgPresetPanel.style.display === 'block' ? 'none' : 'block';
+        DOM.colorPickerPanel.style.display = 'none';
+    });
+
+    DOM.bgColor.addEventListener('click', e => {
+        e.stopPropagation();
+        DOM.colorPickerPanel.style.display = DOM.colorPickerPanel.style.display === 'block' ? 'none' : 'block';
+        DOM.bgPresetPanel.style.display = 'none';
+    });
+
+    document.querySelectorAll('.bg-preset-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const bg = item.dataset.bg;
+            State.currentBackground = bg;
+            applyBackground();
+            
+            document.querySelectorAll('.bg-preset-item').forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+            
+            saveData();
+            DOM.bgPresetPanel.style.display = 'none';
+            showStatus('背景已更换');
+        });
+    });
+
+    DOM.applyColorBg.addEventListener('click', () => {
+        const color = DOM.bgColorPicker.value;
+        State.currentBackground = color;
+        applyBackground();
+        saveData();
+        DOM.colorPickerPanel.style.display = 'none';
+        showStatus('背景颜色已应用');
+    });
+
+    // 右键菜单
+    DOM.ctxAddChild.addEventListener('click', () => {
+        if (State.activeInput) State.activeInput.blur();
+        if (State.selectedNodeId) {
+            const parent = getNodeById(State.selectedNodeId);
+            if (parent) {
+                let childX, childY;
+                if (State.currentLayout === 'free') {
+                    childX = parent.x + 100 * (Math.random() > 0.5 ? 1 : -1);
+                    childY = parent.y + 60 * (Math.random() > 0.5 ? 1 : -1);
+                } else {
+                    childX = parent.x + 150;
+                    childY = parent.y;
+                }
+                createNode(State.selectedNodeId, "", childX, childY);
+            }
+        }
+        hideContextMenu();
+    });
+    
+    DOM.ctxEditNode.addEventListener('click', () => {
+        if (State.selectedNodeId) startNodeEdit(State.selectedNodeId);
+        hideContextMenu();
+    });
+    
+    DOM.ctxDeleteNode.addEventListener('click', () => {
+        if (State.activeInput) State.activeInput.blur();
+        if (State.selectedNodeId) {
+            handleDeleteNode(State.selectedNodeId);
+        }
+        hideContextMenu();
+    });
+    
+    DOM.ctxFocusNode.addEventListener('click', () => {
+        if (contextMenuNodeId) {
+            focusOnNode(contextMenuNodeId);
+        }
+        hideContextMenu();
+    });
+
+    // 全局点击事件
+    document.addEventListener('click', event => {
+        if (DOM.contextMenu.style.display === 'block' && 
+            !DOM.contextMenu.contains(event.target) && 
+            !event.target.closest('.node')) {
+            hideContextMenu();
+        }
+        
+        if (State.isMenuOpen && 
+            event.target !== DOM.menuToggle && 
+            !DOM.menuOptions.contains(event.target) &&
+            !DOM.bgPresetPanel.contains(event.target) &&
+            !DOM.colorPickerPanel.contains(event.target) &&
+            !DOM.workspacePanel.contains(event.target)) {
+            hideMenus();
+        }
+    }, true);
+
+    // 键盘快捷键
+    document.addEventListener('keydown', e => {
+        // Ctrl/Cmd + S: 保存
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+            e.preventDefault();
+            saveData();
+            showStatus('已保存');
+        }
+        
+        // Ctrl/Cmd + E: 导出
+        if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+            e.preventDefault();
+            exportWorkspaceData();
+        }
+        
+        // Ctrl/Cmd + H: 切换文本显隐
+        if ((e.ctrlKey || e.metaKey) && e.key === 'h') {
+            e.preventDefault();
+            toggleTextVisibility();
+        }
+        
+        // Delete: 删除选中节点
+        if (e.key === 'Delete' && State.selectedNodeId && !State.activeInput) {
+            handleDeleteNode(State.selectedNodeId);
+        }
+        
+        // Tab: 添加子节点
+        if (e.key === 'Tab' && State.selectedNodeId && !State.activeInput) {
+            e.preventDefault();
+            const parent = getNodeById(State.selectedNodeId);
+            if (parent) {
+                createNode(State.selectedNodeId, "", parent.x + 150, parent.y + 80);
+            }
+        }
+    });
+
+    // === 初始化系统 ===
+    function init() {
+        initWorkspaceSystem();
+        
+        // 加载默认工作区
+        const lastWorkspaceId = localStorage.getItem('quantum_last_workspace') || 'default';
+        if (State.workspaces[lastWorkspaceId]) {
+            loadWorkspace(lastWorkspaceId);
+        } else {
+            loadWorkspace('default');
+        }
+        
+        // 如果工作区为空，创建初始节点
+        if (State.nodes.length === 0) {
+            createNode(null, "核心主题", DOM.container.offsetWidth / 2, DOM.container.offsetHeight / 2);
+        }
+        
+        // 保存最后使用的工作区
+        window.addEventListener('beforeunload', () => {
+            saveCurrentWorkspace();
+            localStorage.setItem('quantum_last_workspace', State.currentWorkspaceId);
+        });
+        
+        showStatus('量子思维导图已就绪');
+    }
+    
+    // 启动系统
+    requestAnimationFrame(init);
+});
+    </script>
+</body>
+</html>
